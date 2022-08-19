@@ -1,9 +1,14 @@
 var playerName = window.prompt("What is your robot's name?");
+
+// player's base stats
 var playerHealth = 100;
 var playerAttack = 10;
 var playerMoney = 10;
+
+// player economy stats
 var skipFee = 10;
-rewardPay = 20;
+var rewardPay = 20;
+var shopFee = 7;
 
 var enemyNames = ["Roborto", "Amy Android", "Robo Trumble", "Steven Circuit", "Hydro Hambone", "Steely Danish"];
 var enemyHealth = 50;
@@ -79,12 +84,22 @@ var startGame = function () {
             enemyHealth = 50;
             //pass enemy robot into fight()
             fight(pickedEnemyName);
+
+            //offer the shop if there's at least one more enemy to fight
+            if (playerHealth > 0 && i < enemyNames.length - 1) {
+                // ask if player would like to enter the shop
+                var shopConfirm = window.confirm("The fight is over, visit the shop before the next round?")
+                if (shopConfirm) {
+                    shop();
+                }
+            }
         }
-        endGame();
     }
+    endGame();
 };
 
-var endGame = function() {
+var endGame = function () {
+    debugger;
     // if player robot is still alive, player wins!
     if (playerHealth > 0) {
         window.alert("Great job, you've survived the game! You finished with a score of " + playerMoney);
@@ -105,5 +120,56 @@ var endGame = function() {
     }
 
 };
+
+var shop = function () {
+    // ask the player what they would like to do in the shop
+    var shopOptionPrompt = window.prompt(
+        "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice"
+    );
+
+    // interpret shop choice with a switch statement
+    switch (shopOptionPrompt) {
+        case "REFILL":
+        case "refill":
+            if (playerMoney >= shopFee) {
+                window.alert("Refilled your health by 20 for $" + shopFee);
+
+                // increase the player's health and deduct money
+                playerHealth += 20;
+                playerMoney -= shopFee;
+            }
+            else {
+                window.alert("You don't have enough money!");
+            }
+
+            break;
+        case "UPGRADE":
+        case "upgrade":
+            if (playerMoney >= shopFee) {
+                window.alert("Upgraded your attack by 6 for $" + shopFee);
+
+                // increase attack and deduct nmoney
+                playerAttack += 6;
+                playerMoney -= shopFee;
+            }
+            else {
+                window.alert("You don't have enough oney!");
+            }
+
+            break;
+        case "LEAVE":
+        case "leave":
+            // alert player and leave the store
+            window.alert("Leaving the store");
+
+            break;
+        default:
+            window.alert("please pick a valid option.");
+            // relaunch the shop
+            shop();
+            break;
+
+    }
+}
 
 startGame();
